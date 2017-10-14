@@ -31,25 +31,26 @@
 
       _t.$nextTick(() => {
 
-        var dispatch = d3.dispatch("start", "drag", "end");
-
-
-        dispatch.on("start", () => {
-
-          console.log("start...");
-
-        });
-        dispatch.on("drag", () => {
-          console.log("drag...");
-          var x = d3.event.x;
-          var y = d3.event.y;
+//        var dispatch = d3.dispatch("start", "drag", "end");
+//
+//
+//        dispatch.on("start", function () {
 //          console.log(this);
-//          d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
-        });
-
-        dispatch.on("end", () => {
-          console.log("end...");
-        });
+//          console.log("start...");
+//
+//        });
+//        dispatch.on("drag", () => {
+////          console.log(this);
+////          console.log("drag...");
+//          var x = d3.event.x;
+//          var y = d3.event.y;
+////          console.log(this);
+////          d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+//        });
+//
+//        dispatch.on("end", () => {
+//          console.log("end...");
+//        });
 
 
         d3.select("body").transition()
@@ -89,149 +90,50 @@
 
 //        var nodes = [];
 
-        var update = (nodes) => {
-          console.log(nodes);
-          var circles = svg.selectAll(".el")
-            .data(nodes);
-          circles.enter()
 
-            .filter(d => d.type === 'circle').append("svg:circle")
-            .attr("cx", function (d) {
-              return d.x;
-            })
-            .attr("cy", function (d) {
-              return d.y;
-            })
+        var registerDrag = {
+          "toolkit__item": {
+            start() {
+              dragNode = this.cloneNode(true);
+              document.querySelector('body').appendChild(dragNode);
+              dragNode.style.position = "absolute";
+              mx = 0, my = 0;
+              var bounding = this.getBoundingClientRect();
+              startPos.left = (window.scrollX + bounding.left);
+              startPos.top = (window.scrollY + bounding.top);
 
-            .attr("class", 'el')
-
-            .attr("r", "20px")
-            .attr("fill", "green");
-          circles.enter().filter(d => d.type === 'square').append("svg:rect")
-            .attr("x", function (d) {
-              return d.x;
-            })
-            .attr("y", function (d) {
-              return d.y;
-            })
-            .attr("width", "120px")
-            .attr("height", "120px")
-            .attr("fill", "red")
-          circles.exit().remove();
+              dragNode.style.left = startPos.left + "px";
+              dragNode.style.top = startPos.top + "px";
 
 
-        }
-        update(nodes);
+              dragNode.style.width = bounding.width;
+              dragNode.style.height = bounding.height;
+              dragNode.style.margin = "0px";
 
-        var dragNode = null;
+              dragNode.style.backgroundColor = "green";
+//            dispatch.call("start");
+//            if(this.nodeName==="toolkit__item"){
+//              dispatch.apply("start", this, arguments);
+//            }
 
-
-        var startPos = {
-          left: null,
-          top: null
-        }
-        //Drag nodes
-        var drag = d3.drag()
-          .on("start", function () {
-            dragNode = this.cloneNode(true);
-            document.querySelector('body').appendChild(dragNode);
-            dragNode.style.position = "absolute";
-            mx = 0, my = 0;
-            var bounding = this.getBoundingClientRect();
-            startPos.left = (window.scrollX + bounding.left);
-            startPos.top = (window.scrollY + bounding.top);
-
-            dragNode.style.left = startPos.left + "px";
-            dragNode.style.top = startPos.top + "px";
-
-
-            dragNode.style.width = bounding.width;
-            dragNode.style.height = bounding.height;
-            dragNode.style.margin = "0px";
-
-            dragNode.style.backgroundColor = "green";
-            dispatch.call("start");
-            d3.event.sourceEvent.stopPropagation();
-
-
-          })
-          .on("drag", dragmove)
-          .on("end", (d) => {
-            mx = 0;
-            my = 0;
-
-            console.log(svg);
-            var _canvas = svg["_groups"][0][0].getBoundingClientRect()
-            var _node = dragNode.getBoundingClientRect();
-
-
-//            var nodes = [{x: 30, y: 50},
-//              {x: 50, y: 80},
-//              {x: 90, y: 120}];
-
-
-//            console.log();
-//            nodes = nodes.slice(0, 1);
-            nodes.push({x: +_node.left - _canvas.left, y: _node.top - _canvas.top,type:dragNode.getAttribute("type")});
-//            var nodes = [{x: 130, y: Math.random()*100}
-//            ];
-
-
-            update(nodes);
-            dragNode.remove();
-
-
-            dispatch.call("end");
-
-          });
-
-//        var line = svg.append("line")
-//          .style("stroke", "black")
-//          .attr("x1", 150)
-//          .attr("y1", 100)
-//          .attr("x2", 250)
-//          .attr("y2", 300);
-//
-//
-////First node
-//        var g1 = svg.append("g")
-//          .attr("transform", "translate(" + 150 + "," + 100 + ")")
-//          .attr("class", "first")
-//          .call(drag)
-//          .append("circle").attr(
-//            "r", 20
-//          )
-//          .attr("fill", "#F00")
-//
-////Second node
-//        var g2 = svg.append("g")
-//          .attr("transform", "translate(" + 250 + "," + 300 + ")")
-//          .attr("class", "second")
-//          .call(drag)
-//          .append("circle").attr(
-//            "r", 20
-//          )
-//          .attr("fill", "#00F")
-
-//Drag handler
-
-        let mx = 0, my = 0;
-
-        function dragmove(d) {
-          dispatch.apply("drag", this, arguments);
-          var x = d3.event.x;
-          var y = d3.event.y;
+            },
+            drag() {
 //          console.log(this);
-          var node = this["dragNode"];
+          console.log("....");
+//          dispatch.apply("drag", this, arguments);
+              var x = d3.event.x;
+              var y = d3.event.y;
+//          console.log(this);
+              var node = this["dragNode"];
 
 
-          mx = mx + d3.event.dx;
+              mx = mx + d3.event.dx;
 
-          my = my + d3.event.dy;
-          console.log(mx);
+              my = my + d3.event.dy;
+              console.log(mx);
 //
-          dragNode.style.left = (startPos.left + mx) + "px";
-          dragNode.style.top = (startPos.top + my) + "px";
+              dragNode.style.left = (startPos.left + mx) + "px";
+              dragNode.style.top = (startPos.top + my) + "px";
 //          d3.select(this).attr("transform", "translate(" +100+ "," + 100+ ")");
 //          d3.select(dragNode).style("transform", "translate(" + mx + "px," + my + "px)");
 //          if (d3.select(this).attr("class") == "first") {
@@ -241,8 +143,167 @@
 //            line.attr("x2", x);
 //            line.attr("y2", y);
 //          }
+            },
+            end() {
+              mx = 0;
+              my = 0;
+
+              console.log(svg);
+              var _canvas = svg["_groups"][0][0].getBoundingClientRect()
+              var _node = dragNode.getBoundingClientRect();
+
+
+//            var nodes = [{x: 30, y: 50},
+//              {x: 50, y: 80},
+//              {x: 90, y: 120}];
+
+
+//            console.log();
+//            nodes = nodes.slice(0, 1);
+              nodes.push({
+                x: _node.left - _canvas.left,
+                y: _node.top - _canvas.top,
+                type: dragNode.getAttribute("type")
+              });
+//            var nodes = [{x: 130, y: Math.random()*100}
+//            ];
+//              d3.select(this).attr("transform", "translate(" + (_node.left - _canvas.left)+ "," + (_node.top - _canvas.top) + ")");
+
+              update(nodes);
+              dragNode.remove();
+
+
+//              dispatch.call("end");
+            }
+          },
+
+          "el":{
+            start(){
+              var x = d3.event.x;
+              var y = d3.event.y;
+              console.log("x:"+x+"   y:"+y);
+//              d3.select(this).classed("dragging", true)
+              d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+            },
+            drag(){
+              var x = d3.event.x;
+              var y = d3.event.y;
+              d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+//              if(d3.select(this).attr("class") == "first") {
+//                line.attr("x1", x);
+//                line.attr("y1", y);
+//              } else {
+//                line.attr("x2", x);
+//                line.attr("y2", y);
+//              }
+
+
+            },
+            end(){
+//              d3.select(this).classed("dragging", false)
+            }
+
+          }
+
+
         }
 
+
+        var dragNode = null;
+        var startPos = {
+          left: null,
+          top: null
+        }
+        //Drag nodes
+        var drag = d3.drag()
+          .on("start", function () {
+//            console.log(this);
+            console.log("className:"+this.getAttribute("class"));
+            registerDrag[this.getAttribute("class")].start.apply(this, arguments);
+            d3.event.sourceEvent.stopPropagation();
+          })
+          .on("drag", function () {
+            registerDrag[this.getAttribute("class")].drag.apply(this, arguments);
+          })
+          .on("end", function () {
+            registerDrag[this.getAttribute("class")].end.apply(this, arguments);
+          });
+
+
+        var update = (nodes) => {
+          console.log(nodes);
+          var circles = svg.selectAll(".el")
+            .data(nodes);
+
+
+          var g = circles.enter()
+            .append("g")
+            .attr("class", 'el')
+            .attr("transform",function (d) {
+              return "translate(" + d.x+ "," +  d.y+ ")";
+            });
+
+          g.filter(d => d.type === 'circle').append("svg:circle")
+//            .attr("cx", function (d) {
+//              return d.x;
+//            })
+//            .attr("cy", function (d) {
+//              return d.y;
+//            })
+            .attr("r", "20px")
+            .attr("fill", "green");
+
+
+          g.filter(d => d.type === 'square')
+            .append("svg:rect")
+
+            //            .attr("x", function (d) {
+//              return d.x;
+//            })
+//            .attr("y", function (d) {
+//              return d.y;
+//            })
+            .attr("width", "120px")
+            .attr("height", "120px")
+            .attr("fill", "red");
+
+          g.append("svg:circle")
+
+//            .attr("cx", function (d) {
+//              return d.x;
+//            })
+//            .attr("cy", function (d) {
+//              return d.y;
+//            })
+            .attr("r", "5px")
+            .attr("fill", "yellow");
+
+
+          g.append("svg:circle")
+
+//            .attr("cx", function (d) {
+//              return d.x+120;
+//            })
+//            .attr("cy", function (d) {
+//              return d.y;
+//            })
+            .attr("transform",function (d) {
+
+              return "translate(" +120+  "," +  0 + ")";
+            })
+            .attr("r", "5px")
+            .attr("fill", "black");
+
+
+          g.call(drag);
+
+
+          circles.exit().remove();
+
+
+        }
+        update(nodes);
+        let mx = 0, my = 0;
         d3.selectAll(".toolkit__item").call(drag);
       });
 
