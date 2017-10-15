@@ -4,10 +4,9 @@ const uuidv1 = require('uuid/v1');
 
 import initDrag from './drag';
 
-
 import t1 from "./toolkit__item";
 import t2 from "./element";
-import t3 from "./start";
+import connector from "./start";
 import close from './close';
 class etl {
     constructor() {
@@ -30,8 +29,8 @@ class etl {
 
         const registerDrag = {
             "toolkit__item": t1,
-            "el": t2,
-            "start": t3
+            "el": t2
+                // "start": t3
         }
         this.drag = initDrag(registerDrag, this);
         d3.selectAll(".toolkit__item").call(this.drag);
@@ -93,10 +92,10 @@ class etl {
         var nodes = this.data;
         var circles = this.svg.selectAll(".el")
             .data(nodes);
-        circles.on("mouseup", () => {
-            console.log("mouse up....");
+        // circles.on("mouseup", () => {
+        //     console.log("mouse up....");
 
-        })
+        // })
         circles.attr("uuid", function(d) {
                 return d.uuid;
                 // return "xxx";
@@ -147,6 +146,8 @@ class etl {
         })
 
 
+
+        var currentConnector = null;
         //连接线开始
         var wStart = g.append("svg:circle")
             .attr("class", "start")
@@ -154,10 +155,21 @@ class etl {
             .attr("transform", function(d) {
                 return "translate(" + squareSideLength + "," + squareSideLength / 2 + ")";
             })
-            .attr("fill", "purple");
+            .attr("fill", "purple")
+            .on("mousedown", () => {
+
+                console.log("start connect");
+
+                currentConnector = new connector(_t);
+                d3.event.preventDefault();
+                d3.event.stopImmediatePropagation();
+                // d3.event.sourceEvent.stopPropagation();
+            });
+
+
 
         //连接线结束
-        g.append("svg:circle")
+        var end = g.append("svg:circle")
             .attr("r", "10px")
             .attr("transform", function(d) {
                 return "translate(" + 0 + "," + squareSideLength / 2 + ")";
@@ -167,19 +179,37 @@ class etl {
         .on("mouseup", () => {
                 console.log("mouse up....");
 
+
             })
             .on("mouseover", () => {
                 console.log("mouse over....");
 
             })
             .on("mousedown", () => {
-
+                console.log("end connect");
             });
 
 
 
+        _t.svg.on("mousemove.drag", () => {
+            if (d3.event.which === 1) {
+                console.log("move...." + d3.event.which);
+            }
+        }, true);
+
+
+
+        // _t.svg.on("mousemove.drag", () => {
+        //     d3.event.preventDefault();
+        //     d3.event.stopImmediatePropagation();
+        //     console.log("drag....");
+        // }, true);
+
+
+
+
         g.call(this.drag);
-        wStart.call(this.drag);
+        // wStart.call(this.drag);
 
 
         circles.exit().remove();

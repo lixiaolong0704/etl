@@ -59,8 +59,8 @@ export default function(etl) {
             }
 
             path.moveTo(startPos.x, startPos.y);
-            path.lineTo(endPos.x, startPos.y);
-            path.lineTo(endPos.x, endPos.y)
+            path.lineTo(endPos.x - 5, startPos.y);
+            path.lineTo(endPos.x - 5, endPos.y - 5)
                 // path.closePath();
             console.log(path.toString())
             var str = path.toString().replace(/,/g, ' ').replace(/([A-Z])/g, ' $1');
@@ -92,7 +92,7 @@ export default function(etl) {
             // var obj = etl.getBindingDataByUUID(uuid);
             // obj.x = x;
             // obj.y = y;
-            etl.update();
+            // etl.update();
             //              d3.select(this).classed("dragging", false)
         }
     }
