@@ -8,6 +8,7 @@ var startPos = {
 var mx = 0,
     my = 0;
 
+    import square from './elements/square'
 
 export default function(etl) {
     return {
@@ -37,7 +38,7 @@ export default function(etl) {
         },
         drag() {
             //          console.log(this);
-            console.log("....");
+            // console.log("....");
             //          dispatch.apply("drag", this, arguments);
             var x = d3.event.x;
             var y = d3.event.y;
@@ -48,7 +49,7 @@ export default function(etl) {
             mx = mx + d3.event.dx;
 
             my = my + d3.event.dy;
-            console.log(mx);
+            // console.log(mx);
             //
             dragNode.style.left = (startPos.left + mx) + "px";
             dragNode.style.top = (startPos.top + my) + "px";
@@ -70,12 +71,14 @@ export default function(etl) {
             var _node = dragNode.getBoundingClientRect();
 
             var nodes = etl.data;
-            nodes.push({
-                uuid: uuidv1(),
-                x: _node.left - _canvas.left,
-                y: _node.top - _canvas.top,
-                type: dragNode.getAttribute("type")
-            });
+
+            // {
+            //     uuid: uuidv1(),
+            //     x: _node.left - _canvas.left,
+            //     y: _node.top - _canvas.top,
+            //     type: dragNode.getAttribute("type")
+            // }
+            nodes.push(new square(_node.left - _canvas.left, _node.top - _canvas.top));
             etl.update();
             dragNode.remove();
         }

@@ -72,7 +72,7 @@ export default function() {
   function mouseupped() {
     select(event.view).on("mousemove.drag mouseup.drag", null);
     yesdrag(event.view, mousemoving);
-    noevent();
+    // noevent();
     gestures.mouse("end");
   }
 

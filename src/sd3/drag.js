@@ -10,13 +10,13 @@ import {drag}  from '../lib/d3-drag';
 // console.log(typeof drag);
 //Drag nodes
 export default function(registerDrag, etl) {
+    //
+    // function create(el) {
+    //     var fun = registerDrag[el.getAttribute("class")];
+    //     return fun(etl);
+    // }
 
-    function create(el) {
-        var fun = registerDrag[el.getAttribute("class")];
-        return fun(etl);
-    }
-
-    registerDrag = _.mapValues(registerDrag, (fun) => new fun(etl))
+    // registerDrag = _.mapValues(registerDrag, (fun) => new fun(etl))
 
     const aa = drag()
         .on("start", function() {

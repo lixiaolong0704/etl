@@ -11,9 +11,21 @@ export default function(etl) {
             d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
         },
         drag() {
+            console.log("element drag");
+            // var x = d3.event.x;
+            // var y = d3.event.y;
+            // d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
             var x = d3.event.x;
             var y = d3.event.y;
-            d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+            var uuid = d3.select(this).attr("uuid");
+            var obj = etl.getBindingDataByUUID(uuid);
+            obj.x = x;
+            obj.y = y;
+            etl.update();
+
+            // d3.select(this).datum(obj);
+      
+      
             //              if(d3.select(this).attr("class") == "first") {
             //                line.attr("x1", x);
             //                line.attr("y1", y);
@@ -29,8 +41,8 @@ export default function(etl) {
             var y = d3.event.y;
             var uuid = d3.select(this).attr("uuid");
             var obj = etl.getBindingDataByUUID(uuid);
-            obj.x = x;
-            obj.y = y;
+            // obj.x = x;
+            // obj.y = y;
             etl.update();
             //              d3.select(this).classed("dragging", false)
         }
