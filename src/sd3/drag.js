@@ -1,5 +1,13 @@
 import * as d3 from "d3";
 import _ from 'lodash';
+
+
+import {drag}  from '../lib/d3-drag';
+
+// d3.drag= d3.dragfun;
+
+// console.log(drag);
+// console.log(typeof drag);
 //Drag nodes
 export default function(registerDrag, etl) {
 
@@ -9,8 +17,8 @@ export default function(registerDrag, etl) {
     }
 
     registerDrag = _.mapValues(registerDrag, (fun) => new fun(etl))
-    console.log(registerDrag);
-    const drag = d3.drag()
+
+    const aa = drag()
         .on("start", function() {
             //console.log(this);
             console.log("className:" + this.getAttribute("class"));
@@ -26,6 +34,6 @@ export default function(registerDrag, etl) {
             registerDrag[this.getAttribute("class")].end.apply(this, arguments);
         });
 
-    return drag;
+    return aa;
 
 };
