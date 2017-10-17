@@ -14,7 +14,7 @@ import square from './elements/square'
 
 import helper from './helper';
 
-const w=50;
+const w = 50;
 
 class etl {
   constructor() {
@@ -28,6 +28,8 @@ class etl {
       .attr("width", 600)
       .attr("height", 500);
 
+
+
     // var c1 = { uuid: uuidv1(), x: 30, y: 50, type: "circle" };
     // var c1 = new square(30, 50);
     // var s1 = new square(130, 250);
@@ -40,9 +42,9 @@ class etl {
     // ];
 
 
-    this.data=[];
-    // for(var i=0;i<10;i++){
-    //   this.data.push(new square(230, Math.random()*30));
+    this.data = [];
+    // for(var i=0;i<102;i++){
+    //   this.data.push(new square(230, Math.random()*300));
     // }
 
 
@@ -57,6 +59,66 @@ class etl {
     this.update();
 
 
+    var isSelecting=false;
+    var rect=null;
+
+
+
+    var getMouse=function(){
+      var coordinates = [0, 0];
+      coordinates = d3.mouse(_t.svg._groups[0][0]);
+      var x = coordinates[0];
+      var y = coordinates[1];
+      return {
+        x,
+        y
+      }
+    }
+
+    var st=null;
+    this.svg.on("mousedown",()=>{
+      if(d3.event.which){
+        isSelecting=true;
+        console.log("选取1");
+        rect=this.svg.append("rect");
+ 
+        var pos=getMouse();
+        st =pos;
+        // rect.attr("width", `${pos.x}px`)
+        rect.attr("transform", "translate(" + pos.x + "," + pos.y+ ")")
+        .attr("fill", "rgba(20,20,20,0.2)");
+
+      }
+     
+    });
+    this.svg.on("mouseup",()=>{
+      if(d3.event.which && rect){
+        isSelecting=false;
+        // rect.attr("width", `${pos.x}px`)
+        rect.remove();
+
+      }
+     
+    });
+    this.svg.on("mousemove",()=>{
+      if(d3.event.which && isSelecting){
+        console.log("选取");
+          var n = getMouse();
+
+
+          var px=n.x-st.x;
+          var py =n.y - st.y;
+
+          var x=Math.abs(px);
+          var y =Math.abs(py);
+
+          rect.attr("transform", "translate(" +(px>=0?st.x:(st.x-x)) + "," + (py>=0? st.y:(st.y-y))+ ")")
+
+        rect.attr("width", `${x}px`)
+        .attr("height", `${y}px`)
+      }
+     
+    });
 
   }
 
@@ -89,7 +151,16 @@ class etl {
       .on("click", (d) => {
         // alert(d3.select(this).attr("uuid"));
         // alert(d.uuid);
+        var binding = this.getBindingDataByUUID(d.uuid);
+        if (binding.connect) {
+          this.removeByUUID(binding.connect.uuid);
+          binding.connect.release();
+          binding.connect = null;
+         
+        }
+    
         this.removeByUUID(d.uuid);
+
 
         this.update();
       });
@@ -138,11 +209,11 @@ class etl {
 
     this.bindClose(element.select(".close"));
 
-    element.select("path")     
-     .attr("d", function (d) {
+    element.select("path")
+      .attr("d", function (d) {
 
-      return helper.drawConnector(d.start.rc(), d.end.lc());
-    })
+        return helper.drawConnector(d.start.rc(), d.end.lc());
+      })
 
     var g = element.enter()
       .append("g")
@@ -154,104 +225,75 @@ class etl {
       .attr("type", function (d) {
         return d.type;
         // return "xxx";
-      })
-      .attr("transform", function (d) {
-        if (d.x)
-          return "translate(" + d.x + "," + d.y + ")";
-      })
+      }).each(function () {
+
+        var $t = d3.select(this);
+        var type = $t.attr("type");
+        //拖拽元素正方形
+        if (type === "square") {
+          $t.attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+          })
 
 
 
-    g.filter(d => d.type === 'circle').append("svg:circle")
-      .attr("r", "20px")
-      .attr("fill", "green");
+          const squareSideLength = w;
+          var $rect = $t.append("rect");
+          square.style($rect);
 
-    g.filter(d => d.type === 'connect').append("path")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", "5")
-      .attr("d", function (d) {
-        return helper.drawConnector(d.start.rc(), d.end.lc());
-      })
+          $t.append("text").text((d) => d.uuid);
+          // $t.append("svg:circle")
+          //   .attr("r", "5px")
+          //   .attr("fill", "yellow");
+          _t.bindClose($t.append("circle"));
 
 
+          //连接线开始-锚点
+          var wStart = $t.append("circle")
+            .attr("class", "start")
+            .attr("r", "10px")
+            // .attr("transform", function (d) {
+            //   return "translate(" + squareSideLength + "," + squareSideLength / 2 + ")";
+            // })
+            .attr("cx", () => squareSideLength)
+            .attr("cy", () => squareSideLength / 2)
+            .attr("fill", "orange");
 
+          //连接线结束-锚点
+          var end = $t.append("circle")
+            .attr("r", "10px")
+            // .attr("transform", function (d) {
+            //   return "translate(" + 0 + "," + squareSideLength / 2 + ")";
+            // })
+            .attr("cx", () => 0)
+            .attr("cy", () => squareSideLength / 2)
+            .attr("fill", "purple")
 
+            .on("mouseup", function (d) {
+              console.log("mouse up....");
+              _t.registerDrag.start.cancelRemove(d);
 
-
-    const squareSideLength = w;
-    var rect = g.filter(d => d.type === 'square')
-      .append("svg:rect");
-      square.style(rect);
-
-    
-    g.append("text").text((d) => d.uuid);
-    g.append("svg:circle")
-      .attr("r", "5px")
-      .attr("fill", "yellow");
-
-
-      // g.on("mousedown",function(){
- 
-      // });
-    this.bindClose(g.append("svg:circle"));
-
-
-
-
-    //连接线开始-锚点
-    var wStart = g.append("circle")
-      .attr("class", "start")
-      .attr("r", "10px")
-      // .attr("transform", function (d) {
-      //   return "translate(" + squareSideLength + "," + squareSideLength / 2 + ")";
-      // })
-      .attr("cx",()=> squareSideLength)
-      .attr("cy",()=>  squareSideLength / 2)
-      .attr("fill", "orange");
+            });
+          $t.call(_t.drag);
+          wStart.call(_t.drag);
 
 
 
-    //连接线结束-锚点
-    var end = g.append("circle")
-      .attr("r", "10px")
-      // .attr("transform", function (d) {
-      //   return "translate(" + 0 + "," + squareSideLength / 2 + ")";
-      // })
-      .attr("cx",()=> 0)
-      .attr("cy",()=>  squareSideLength / 2)
-      .attr("fill", "purple")
+        } else if (type === "connect") {
+          $t.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("stroke-width", "2")
+            .attr("d", function (d) {
+              return helper.drawConnector(d.start.rc(), d.end.lc());
+            })
 
-      .on("mouseup", function (d) {
-        console.log("mouse up....");
-        _t.registerDrag.start.cancelRemove(d);
+        }
 
-      });
-
-      // var arr= end.mouse(_t.svg);
-      // console.log(arr);
-    
 
 
 
-    // _t.svg.on("mousemove.drag", () => {
-    //     if (d3.event.which === 1) {
-    //         console.log("move...." + d3.event.which);
-    //     }
-    // }, true);
-
-
-    // _t.svg.on("mousemove.drag", () => {
-    //     d3.event.preventDefault();
-    //     d3.event.stopImmediatePropagation();
-    //     console.log("drag....");
-    // }, true);
-
-
-    // console.log("call ...");
-    // console.log(wStart);
-    g.call(this.drag);
-    wStart.call(this.drag);
+      });
 
 
     element.exit().remove();

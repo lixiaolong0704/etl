@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import roundPathCorners from './rounding';
+import connect from './elements/connect';
 import helper from './helper';
 const uuidv1 = require('uuid/v1');
 export default function (etl) {
@@ -11,12 +12,14 @@ export default function (etl) {
     y: 0
   }
   var d3el = null;
-  var tm=0;
 
   var currentDataModel=null;
-  return {
 
-    tm: 0,
+
+
+
+  return {
+ 
     start() {
       this.tm = 0;
       var x = d3.event.x;
@@ -34,8 +37,8 @@ export default function (etl) {
       // .enter
         .attr("fill", "none")
         .attr("stroke", "black")
-        .attr("stroke-width", "5")
-        // .attr("stroke-dasharray", "90")
+        .attr("stroke-width", "2")
+        .attr("stroke-dasharray", "2")
         //   stroke-miterlimit="6"
         // stroke-width="0"
         // stroke-dasharray: 720;
@@ -63,32 +66,21 @@ export default function (etl) {
       coordinates = d3.mouse(etl.svg._groups[0][0]);
       var x = coordinates[0];
       var y = coordinates[1];
-
-      console.log(this);
-      // console.log();
-
-      var x = coordinates[0];
-      var y =  coordinates[1];
       var endPos = {
         x: x ,
         y: y
       }
-      // var endPos={x:d3.event.x,y:d3.event.y};
-
-      // console.log(this);
      var d= helper.drawConnector(startPos,endPos);
-      d3el = etl.svg.select("path")
-        .attr("d", d);
+      d3el.attr("d", d);
  
 
     },
     end() {
 
       console.log("end  ....");
-      tm = setTimeout(() => {
+      setTimeout(() => {
         // console.log("remvoe"+ tm);
         d3el.remove();
-
       },1);
 
       // var x = d3.event.x;
@@ -102,9 +94,11 @@ export default function (etl) {
     },
     cancelRemove(endd){
 
-
-      etl.data.push( { uuid: uuidv1(), start: currentDataModel, end:endd, type: "connect" })
-      etl.update();
+      
+      if(endd.uuid !== currentDataModel.uuid){ //结束点不能和起始点相同
+        etl.data.push(new connect(currentDataModel, endd));
+        etl.update();
+      }
       // currentDataModel.start =
       // currentDataModel.end =
       // console.log("cancel"+this.tm);

@@ -10,8 +10,11 @@ class square{
 
         this.w = 50;
         this.type="square";
+        this.connect = null;
         // this.rc =this.getRightCenter();
     }
+
+ 
 
     rc(){
 

@@ -5,8 +5,9 @@ export default {
 
         var path = d3.path();
         path.moveTo(startPos.x, startPos.y);
-        path.lineTo(endPos.x - 5, startPos.y);
-        path.lineTo(endPos.x - 5, endPos.y - 5)
+        path.lineTo(startPos.x + (endPos.x-startPos.x)/2 , startPos.y);
+        path.lineTo(startPos.x + (endPos.x-startPos.x)/2  , endPos.y);
+        path.lineTo(endPos.x , endPos.y-3)
         // path.closePath();
         // console.log(path.toString())
         var str = path.toString().replace(/,/g, ' ').replace(/([A-Z])/g, ' $1');

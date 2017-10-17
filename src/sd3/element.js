@@ -12,17 +12,18 @@ export default function(etl) {
             //              d3.select(this).classed("dragging", true)
             d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
         },
-        drag() {
-            console.log("element drag");
+        drag(d) {
+            // console.log("element drag");
+            console.log(d);
             // var x = d3.event.x;
             // var y = d3.event.y;
             // d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
             var x = d3.event.x;
             var y = d3.event.y;
-            var uuid = d3.select(this).attr("uuid");
-            var obj = etl.getBindingDataByUUID(uuid);
-            obj.x = x;
-            obj.y = y;
+            // var uuid = d3.select(this).attr("uuid");
+            // var obj = etl.getBindingDataByUUID(uuid);
+            d.x = x;
+            d.y = y;
             etl.update();
 
             // d3.select(this).datum(obj);

@@ -24,6 +24,10 @@ console.log(test);
 
 import etl from '../sd3/etl';
 
+ 
+
+
+
 export default {
   name: 'hello',
   data() {
@@ -46,6 +50,8 @@ export default {
     b.start();
 
     _t.$nextTick(() => {
+
+  
 
       d3.select("body").transition()
         .style("background-color", "black");
