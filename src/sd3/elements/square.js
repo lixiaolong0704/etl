@@ -15,6 +15,20 @@ class square{
     }
 
  
+    
+    points(){
+        var _t=this;
+
+        return [
+            [_t.x,_t.y],
+            [_t.x+_t.w,_t.y],
+            [_t.x+_t.w,_t.y+_t.w],
+            [_t.x,_t.y+_t.w]
+        ]
+
+    }
+
+
 
     rc(){
 

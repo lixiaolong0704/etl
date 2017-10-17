@@ -107,4 +107,7 @@ export default {
 circle {
   color: black;
 }
+.bg{
+    background-color: red;
+}
 </style>

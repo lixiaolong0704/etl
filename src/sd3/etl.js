@@ -13,7 +13,7 @@ import close from './close';
 import square from './elements/square'
 
 import helper from './helper';
-
+var inside = require('point-in-polygon')
 const w = 50;
 
 class etl {
@@ -25,6 +25,8 @@ class etl {
 
     this.svg = d3.select(".canvas")
       .append("svg")
+      .attr("class","bg")
+      // .attr("viewBox","0 0 32 32")
       .attr("width", 600)
       .attr("height", 500);
 
@@ -100,12 +102,22 @@ class etl {
       }
      
     });
+    this.svg.on("mouseleave",()=>{
+      if(d3.event.which && rect){
+        isSelecting=false;
+        // rect.attr("width", `${pos.x}px`)
+        rect.remove();
+
+      }
+     
+    });
+
+
+    
     this.svg.on("mousemove",()=>{
       if(d3.event.which && isSelecting){
         console.log("选取");
           var n = getMouse();
-
-
           var px=n.x-st.x;
           var py =n.y - st.y;
 
@@ -113,9 +125,18 @@ class etl {
           var y =Math.abs(py);
 
           rect.attr("transform", "translate(" +(px>=0?st.x:(st.x-x)) + "," + (py>=0? st.y:(st.y-y))+ ")")
+          rect.attr("width", `${x}px`)
+          .attr("height", `${y}px`)
 
-        rect.attr("width", `${x}px`)
-        .attr("height", `${y}px`)
+      
+        // var si=5;
+
+        // if(!inside([n.x,n.y],[[5,5],[600-5,5],[600-5,500-5],[5,500-5]])){
+        //   isSelecting=false;
+        //   rect.remove();
+          
+        // }
+
       }
      
     });
