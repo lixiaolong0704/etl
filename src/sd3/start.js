@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import roundPathCorners from './rounding';
 import helper from './helper';
+const uuidv1 = require('uuid/v1');
 export default function (etl) {
 
   var path = null;
@@ -25,7 +26,7 @@ export default function (etl) {
 
       var uuid= d3.select(this.parentNode).attr("uuid");
       currentDataModel= etl.getBindingDataByUUID(uuid);
-      startPos = currentDataModel;
+      startPos = currentDataModel.rc();
    
       path.moveTo(startPos.x, startPos.y);
       d3el = etl.svg.append("path")
@@ -53,16 +54,28 @@ export default function (etl) {
       // d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
     },
     drag() {
+
+      // debugger
       path = d3.path();
 
-      var x = d3.event.x;
-      var y = d3.event.y;
+    
+      var coordinates = [0, 0];
+      coordinates = d3.mouse(etl.svg._groups[0][0]);
+      var x = coordinates[0];
+      var y = coordinates[1];
+
+      console.log(this);
+      // console.log();
+
+      var x = coordinates[0];
+      var y =  coordinates[1];
       var endPos = {
         x: x ,
         y: y
       }
+      // var endPos={x:d3.event.x,y:d3.event.y};
 
-      console.log(this);
+      // console.log(this);
      var d= helper.drawConnector(startPos,endPos);
       d3el = etl.svg.select("path")
         .attr("d", d);
@@ -73,7 +86,7 @@ export default function (etl) {
 
       console.log("end  ....");
       tm = setTimeout(() => {
-        console.log("remvoe"+ tm);
+        // console.log("remvoe"+ tm);
         d3el.remove();
 
       },1);
@@ -87,9 +100,15 @@ export default function (etl) {
       // etl.update();
       //              d3.select(this).classed("dragging", false)
     },
-    cancelRemove(){
+    cancelRemove(endd){
+
+
+      etl.data.push( { uuid: uuidv1(), start: currentDataModel, end:endd, type: "connect" })
+      etl.update();
+      // currentDataModel.start =
+      // currentDataModel.end =
       // console.log("cancel"+this.tm);
-      clearTimeout(tm);
+      // clearTimeout(tm);
     }
   }
 }

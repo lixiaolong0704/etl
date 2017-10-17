@@ -5,7 +5,9 @@ export default function(etl) {
         start() {
             var x = d3.event.x;
             var y = d3.event.y;
-            console.log("x:" + x + "   y:" + y);
+
+            // console.log(this.d);
+            // console.log("x:" + x + "   y:" + y);
             // console.log( d3.select(this).attr("data"));
             //              d3.select(this).classed("dragging", true)
             d3.select(this).attr("transform", "translate(" + x + "," + y + ")");

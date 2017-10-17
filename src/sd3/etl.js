@@ -55,6 +55,9 @@ class etl {
     d3.selectAll(".toolkit__item").call(this.drag);
 
     this.update();
+
+
+
   }
 
 
@@ -119,6 +122,10 @@ class etl {
       return d.uuid;
       // return "xxx";
     })
+    element.attr("type", function (d) {
+      return d.type;
+      // return "xxx";
+    })
 
       .attr("transform", function (d) {
         if (d.x) {
@@ -142,6 +149,10 @@ class etl {
       .attr("class", 'el')
       .attr("uuid", function (d) {
         return d.uuid;
+        // return "xxx";
+      })
+      .attr("type", function (d) {
+        return d.type;
         // return "xxx";
       })
       .attr("transform", function (d) {
@@ -178,35 +189,48 @@ class etl {
     g.append("svg:circle")
       .attr("r", "5px")
       .attr("fill", "yellow");
+
+
+      // g.on("mousedown",function(){
+ 
+      // });
     this.bindClose(g.append("svg:circle"));
 
 
 
 
     //连接线开始-锚点
-    var wStart = g.append("svg:circle")
+    var wStart = g.append("circle")
       .attr("class", "start")
       .attr("r", "10px")
       // .attr("transform", function (d) {
       //   return "translate(" + squareSideLength + "," + squareSideLength / 2 + ")";
       // })
-      .attr("fill", "purple");
+      .attr("cx",()=> squareSideLength)
+      .attr("cy",()=>  squareSideLength / 2)
+      .attr("fill", "orange");
 
 
 
     //连接线结束-锚点
-    var end = g.append("svg:circle")
+    var end = g.append("circle")
       .attr("r", "10px")
-      .attr("transform", function (d) {
-        return "translate(" + 0 + "," + squareSideLength / 2 + ")";
-      })
+      // .attr("transform", function (d) {
+      //   return "translate(" + 0 + "," + squareSideLength / 2 + ")";
+      // })
+      .attr("cx",()=> 0)
+      .attr("cy",()=>  squareSideLength / 2)
       .attr("fill", "purple")
 
-      .on("mouseup", function () {
+      .on("mouseup", function (d) {
         console.log("mouse up....");
-        _t.registerDrag.start.cancelRemove();
+        _t.registerDrag.start.cancelRemove(d);
 
       });
+
+      // var arr= end.mouse(_t.svg);
+      // console.log(arr);
+    
 
 
 
@@ -224,6 +248,8 @@ class etl {
     // }, true);
 
 
+    // console.log("call ...");
+    // console.log(wStart);
     g.call(this.drag);
     wStart.call(this.drag);
 
