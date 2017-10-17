@@ -14,23 +14,17 @@ export default function (etl) {
   var d3el = null;
 
   var currentDataModel=null;
-
-
-
-
   return {
  
-    start() {
+    start(d) {
       this.tm = 0;
       var x = d3.event.x;
       var y = d3.event.y;
    
       path = d3.path();
 
-      var uuid= d3.select(this.parentNode).attr("uuid");
-      currentDataModel= etl.getBindingDataByUUID(uuid);
-      startPos = currentDataModel.rc();
-   
+      currentDataModel= d;
+      startPos = d.rc();
       path.moveTo(startPos.x, startPos.y);
       d3el = etl.svg.append("path")
       // .datum([pointerPos])
@@ -57,11 +51,8 @@ export default function (etl) {
       // d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
     },
     drag() {
-
       // debugger
       path = d3.path();
-
-    
       var coordinates = [0, 0];
       coordinates = d3.mouse(etl.svg._groups[0][0]);
       var x = coordinates[0];
@@ -70,27 +61,12 @@ export default function (etl) {
         x: x ,
         y: y
       }
-     var d= helper.drawConnector(startPos,endPos);
+      var d= helper.drawConnector(startPos,endPos);
       d3el.attr("d", d);
- 
 
     },
     end() {
-
-      console.log("end  ....");
-      setTimeout(() => {
-        // console.log("remvoe"+ tm);
-        d3el.remove();
-      },1);
-
-      // var x = d3.event.x;
-      // var y = d3.event.y;
-      // var uuid = d3.select(this).attr("uuid");
-      // var obj = etl.getBindingDataByUUID(uuid);
-      // obj.x = x;
-      // obj.y = y;
-      // etl.update();
-      //              d3.select(this).classed("dragging", false)
+       d3el.remove();
     },
     cancelRemove(endd){
 

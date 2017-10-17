@@ -141,6 +141,7 @@ class etl {
 
   bindClose(el) {
     //g.append("svg:circle")
+    var _t=this;
     var close = el
       .attr("transform", function (d) {
         return "translate(" + w + "," + 0 + ")";
@@ -148,21 +149,14 @@ class etl {
       .attr("class", "close")
       .attr("r", "5px")
       .attr("fill", "black")
-      .on("click", (d) => {
-        // alert(d3.select(this).attr("uuid"));
-        // alert(d.uuid);
-        var binding = this.getBindingDataByUUID(d.uuid);
-        if (binding.connect) {
-          this.removeByUUID(binding.connect.uuid);
-          binding.connect.release();
-          binding.connect = null;
-         
+      .on("click",function (d){
+        if(d.connect){
+          _t.removeByUUID(d.connect.uuid);
+          d3.select(`[uuid="${d.connect.uuid}"]`).remove();
         }
-    
-        this.removeByUUID(d.uuid);
-
-
-        this.update();
+       
+        _t.removeByUUID(d.uuid);
+        d3.select(this.parentNode).remove();
       });
 
   }
@@ -181,7 +175,7 @@ class etl {
 
   update() {
     var _t = this;
-    // console.log(nodes);
+    console.log("update...");
     var nodes = this.data;
     var element = this.svg.selectAll(".el")
       .data(nodes);
@@ -211,7 +205,6 @@ class etl {
 
     element.select("path")
       .attr("d", function (d) {
-
         return helper.drawConnector(d.start.rc(), d.end.lc());
       })
 
@@ -252,9 +245,6 @@ class etl {
           var wStart = $t.append("circle")
             .attr("class", "start")
             .attr("r", "10px")
-            // .attr("transform", function (d) {
-            //   return "translate(" + squareSideLength + "," + squareSideLength / 2 + ")";
-            // })
             .attr("cx", () => squareSideLength)
             .attr("cy", () => squareSideLength / 2)
             .attr("fill", "orange");
@@ -262,9 +252,6 @@ class etl {
           //连接线结束-锚点
           var end = $t.append("circle")
             .attr("r", "10px")
-            // .attr("transform", function (d) {
-            //   return "translate(" + 0 + "," + squareSideLength / 2 + ")";
-            // })
             .attr("cx", () => 0)
             .attr("cy", () => squareSideLength / 2)
             .attr("fill", "purple")
